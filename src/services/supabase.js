@@ -8,6 +8,10 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Funções auxiliares
 export const registerAttendance = async (studentCode, classId) => {
+
+console.log('--- DEBUG VERCEL ---');
+console.log('URL:', import.meta.env.VITE_SUPABASE_URL);
+console.log('KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);
   try {
     // 1. LIMPEZA TOTAL: Converte para texto e remove espaços das pontas
     const cleanCode = String(studentCode).trim();

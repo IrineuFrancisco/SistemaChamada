@@ -28,6 +28,10 @@ const App = () => {
     if (!error && data) {
       setClasses(data);
     }
+
+    console.log('--- DEBUG VERCEL ---');
+    console.log('URL:', import.meta.env.VITE_SUPABASE_URL);
+    console.log('KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);
   };
 
   const loadAttendances = async () => {
