@@ -4,6 +4,7 @@ import QRScanner from './components/QRScanner';
 import StudentRegister from './components/StudentRegister';
 import { registerAttendance, getAttendances, getClasses } from './services/supabase';
 import senaiLogo from './assets/img/senai_logo.png'; 
+import senaiBackground from './assets/img/bk_image_senai.png';
 
 const App = () => {
   const [view, setView] = useState('home');
@@ -104,7 +105,8 @@ const App = () => {
   if (view === 'home') {
     return (
       // <div className="min-h-screen bg-gradient-to-br from-blue-200 to-red-600 flex items-center justify-center p-4">
-        <div className="min-h-screen bg-gradient-to-br from-red-600 to-black  flex items-center justify-center p-4">
+        // <div className="min-h-screen bg-gradient-to-br from-red-600 to-black  flex items-center justify-center p-4">
+        <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4" style={{ backgroundImage: `url(${senaiBackground})` }}>
         
         {/* --- MODAL DE SENHA (JANELA FLUTUANTE) --- */}
         {showPasswordModal && (
@@ -192,7 +194,9 @@ const App = () => {
   // --- TELA DO ALUNO ---
   if (view === 'student') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-600 to-black p-4">
+      // <div className="min-h-screen bg-gradient-to-br from-red-600 to-black p-4">
+        <div className="min-h-screen bg-cover bg-center p-4"
+          style={{ backgroundImage: `url(${senaiBackground})` }}>
         <div className="max-w-2xl mx-auto">
           <button
             onClick={() => { setScanning(false); setView('home'); }}

@@ -2,6 +2,7 @@ import React, { useState, useEffect  } from 'react';
 import { UserPlus, Save, ArrowLeft, Camera, X } from 'lucide-react';
 import { createStudent, getClasses  } from '../services/supabase';
 import QRScanner from './QRScanner'; // Importamos o scanner que já configuramos
+import senaiBackground from '.././assets/img/bk_image_senai.png';
 
 const StudentRegister = ({ onBack }) => {
   const [formData, setFormData] = useState({
@@ -85,7 +86,9 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 to-black p-4">
+    // <div className="min-h-screen bg-gradient-to-br from-red-600 to-black p-4">
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4"
+          style={{ backgroundImage: `url(${senaiBackground})` }}>
       {/* --- MODAL DA CÂMERA (Aparece quando scanning é true) --- */}
       {scanning && (
         <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4">
