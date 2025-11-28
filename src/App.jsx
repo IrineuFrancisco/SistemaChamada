@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Camera, Users, Calendar, CheckCircle, Clock, BarChart3, X, Lock } from 'lucide-react';
+import { Camera, Users, Calendar, CheckCircle, Clock, BarChart3, X, Lock, FormInput, FormIcon, WebhookIcon, 
+  HomeIcon, NotebookIcon, DoorOpenIcon, Menu } from 'lucide-react'; // <--- Adicionei 'Menu' aqui
 import QRScanner from './components/QRScanner';
 import StudentRegister from './components/StudentRegister';
 import { registerAttendance, getAttendances, getClasses } from './services/supabase';
@@ -19,6 +20,9 @@ const App = () => {
   // Estados para o Modal de Senha
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
+
+  // Novo estado para o Menu Hambúrguer
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     loadClasses();
@@ -46,20 +50,18 @@ const App = () => {
     }
   };
 
-  // 1. Função que abre o modal
   const handleTeacherAccess = () => {
     setShowPasswordModal(true);
-    setPasswordInput(''); // Limpa o campo
+    setPasswordInput('');
   };
 
-  // 2. Função que verifica a senha digitada no modal
   const verifyPassword = () => {
     if (passwordInput === 'S3nai#$p') {
       setShowPasswordModal(false);
       setView('teacher');
     } else {
       alert("Senha incorreta!");
-      setPasswordInput(''); // Limpa para tentar de novo
+      setPasswordInput('');
     }
   };
 
@@ -104,11 +106,9 @@ const App = () => {
   // --- TELA INICIAL (HOME) ---
   if (view === 'home') {
     return (
-      // <div className="min-h-screen bg-gradient-to-br from-blue-200 to-red-600 flex items-center justify-center p-4">
-        // <div className="min-h-screen bg-gradient-to-br from-red-600 to-black  flex items-center justify-center p-4">
-        <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4" style={{ backgroundImage: `url(${senaiBackground})` }}>
+      <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4" style={{ backgroundImage: `url(${senaiBackground})` }}>
         
-        {/* --- MODAL DE SENHA (JANELA FLUTUANTE) --- */}
+        {/* --- MODAL DE SENHA --- */}
         {showPasswordModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in fade-in zoom-in duration-200">
@@ -121,9 +121,7 @@ const App = () => {
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              
               <p className="text-gray-600 mb-4 text-sm">Digite a senha de administrador para acessar o painel.</p>
-              
               <input
                 type="password"
                 autoFocus
@@ -133,7 +131,6 @@ const App = () => {
                 className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg"
                 placeholder="Senha"
               />
-              
               <button
                 onClick={verifyPassword}
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors"
@@ -143,21 +140,120 @@ const App = () => {
             </div>
           </div>
         )}
-        {/* ----------------------------------------- */}
 
-        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
-          <div className="text-center mb-8">
+        {/* --- MENU HAMBÚRGUER --- */}
+        
+        {/* Botão de Abrir */}
+        {!isMenuOpen && (
+          <button 
+            onClick={() => setIsMenuOpen(true)}
+            className="absolute top-6 left-6 z-20 bg-white/90 p-3 rounded-xl shadow-lg hover:bg-white hover:scale-105 transition-all text-gray-700 border border-white/20 backdrop-blur-sm"
+            title="Menu de Utilidades"
+          >
+            <Menu className="w-8 h-8" />
+          </button>
+        )}
+
+        {/* Fundo Escuro (Backdrop) */}
+        <div 
+          className={`fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 backdrop-blur-sm ${
+            isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+          }`}
+          onClick={() => setIsMenuOpen(false)}
+        />
+
+        {/* Gaveta Lateral (Drawer) */}
+        <div 
+          className={`fixed top-0 left-0 h-full w-[340px] bg-white/95 backdrop-blur-md shadow-2xl z-40 transform transition-transform duration-300 ease-out ${
+            isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          {/* Cabeçalho do Menu */}
+          <div className="flex justify-between items-center p-6 border-b border-gray-200">
+            <div>
+              <h2 className="text-xl font-bold text-gray-800">Utilidades</h2>
+              {/* <p className="text-xs text-gray-500">Links rápidos</p> */}
+            </div>
+            <button 
+              onClick={() => setIsMenuOpen(false)}
+              className="p-2 hover:bg-red-100 hover:text-red-600 rounded-full transition-colors text-gray-500"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Lista de Links */}
+          <div className="p-6 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-100px)]">
             
-            {/* ÍCONE SECRETO */}
+            {/* Link 1: Meu Senai */}
+            <a href="https://identidade.senai.br/authenticationendpoint/login.do?RelayState=https%3A%2F%2Fmeusenai.senai.br%2F&commonAuthCallerPath=%2Fsamlsso&forceAuth=false&passiveAuth=false&tenantDomain=carbon.super&sessionDataKey=7c791ccc-3748-4d46-bc53-2bb71c8144cf&relyingParty=https%3A%2F%2Fmeusenai.senai.br&type=samlsso&sp=meusenai.senai.br&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL" target='blank' className="group">
+              <div className="bg-white border border-gray-200 hover:border-red-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
+                <div className="bg-red-100 p-3 rounded-lg group-hover:bg-red-600 transition-colors">
+                  <HomeIcon className="w-6 h-6 text-red-600 group-hover:text-white transition-colors" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800">Meu Senai</h3>
+                  <p className="text-xs text-gray-500">Acesso ao portal</p>
+                </div>
+              </div>
+            </a>
+
+            {/* Link 2: Google Classroom */}
+            <a href="https://classroom.google.com/" target='blank' className="group">
+              <div className="bg-white border border-gray-200 hover:border-green-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
+                <div className="bg-green-100 p-3 rounded-lg group-hover:bg-green-600 transition-colors">
+                  <NotebookIcon className="w-6 h-6 text-green-600 group-hover:text-white transition-colors" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800">Classroom</h3>
+                  <p className="text-xs text-gray-500">Salas de aula</p>
+                </div>
+              </div>
+            </a>
+
+            {/* Link 3: TransitRoom */}
+            <a href="https://niloweb.com.br/transit-room/" target='blank' className="group">
+              <div className="bg-white border border-gray-200 hover:border-purple-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
+                <div className="bg-purple-100 p-3 rounded-lg group-hover:bg-purple-600 transition-colors">
+                  <DoorOpenIcon className="w-6 h-6 text-purple-600 group-hover:text-white transition-colors" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800">TransitRoom</h3>
+                  <p className="text-xs text-gray-500">Gestão de salas</p>
+                </div>
+              </div>
+            </a>
+
+            {/* Link 4: Registrar Atestado */}
+            <a href="https://forms.gle/GKWVwv8z7qHhBNqd8" target='blank' className="group">
+              <div className="bg-white border border-gray-200 hover:border-blue-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
+                <div className="bg-blue-100 p-3 rounded-lg group-hover:bg-blue-600 transition-colors">
+                  <FormIcon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800">Atestado</h3>
+                  <p className="text-xs text-gray-500">Registrar justificativa</p>
+                </div>
+              </div>
+            </a>
+
+          </div>
+          
+          <div className="absolute bottom-0 w-full p-6 text-center text-xs text-gray-400 border-t border-gray-100">
+            IrineuFrancisco &copy; 2025
+          </div>
+        </div>
+
+        {/* --- CARD PRINCIPAL (SISTEMA) --- */}
+        <div className="bg-white/80 rounded-2xl shadow-2xl p-8 max-w-md w-full">
+          <div className="text-center mb-8">
             <div 
               onClick={handleTeacherAccess}
-              className=" flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-blue-200 transition-colors"
+              className="flex items-center justify-center mx-auto mb-4 cursor-pointer transition-colors"
               title="Acesso Administrativo"
             >
-              <img src={senaiLogo} alt="Logo" className="w-300 h-300" />
+              <Camera className="w-10 h-10 text-blue-600" />
             </div>
-            
-            {/* TÍTULO SECRETO */}
             <h1 
               onClick={handleTeacherAccess}
               className="text-3xl font-bold text-gray-800 mb-2 cursor-pointer select-none hover:text-blue-600 transition-colors"
@@ -178,7 +274,7 @@ const App = () => {
 
             <button
               onClick={() => setView('register')}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all transform hover:scale-105"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all transform hover:scale-105 opacity-1 "
             >
               <div className="bg-white/20 p-2 rounded-full">
                 <Users className="w-5 h-5" />
@@ -194,9 +290,7 @@ const App = () => {
   // --- TELA DO ALUNO ---
   if (view === 'student') {
     return (
-      // <div className="min-h-screen bg-gradient-to-br from-red-600 to-black p-4">
-        <div className="min-h-screen bg-cover bg-center p-4"
-          style={{ backgroundImage: `url(${senaiBackground})` }}>
+      <div className="min-h-screen bg-cover bg-center p-4" style={{ backgroundImage: `url(${senaiBackground})` }}>
         <div className="max-w-2xl mx-auto">
           <button
             onClick={() => { setScanning(false); setView('home'); }}
@@ -276,7 +370,7 @@ const App = () => {
     );
   }
 
-  // --- PAINEL DO PROFESSOR ---
+  // --- PAINEL DO PROFESSOR (Sem alterações) ---
   if (view === 'teacher') {
     const today = new Date().toLocaleDateString('pt-BR');
 

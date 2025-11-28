@@ -33,6 +33,43 @@ const TeacherView = ({ onBack }) => {
     setLoading(false);
   };
 
+  // const loadData = async () => {
+  //   if (!selectedClass) return;
+    
+  //   const today = new Date().toISOString().split('T')[0];
+
+  //   // 1. Busca TODOS os alunos da turma selecionada
+  //   const { data: studentsData } = await getStudentsByClass(selectedClass);
+    
+  //   // 2. Busca QUEM ESTÁ PRESENTE hoje
+  //   const { data: attendanceData } = await getAttendances(selectedClass, today);
+
+  //   if (studentsData) {
+  //     // 3. Cruza as duas listas
+  //     const combinedList = studentsData.map(student => {
+  //       // Verifica se o aluno está na lista de presença
+  //       const presence = attendanceData?.find(a => 
+  //         // Compara ID do aluno (pode vir como students.id ou student_id dependendo do Supabase)
+  //         String(a.students?.id || a.student_id) === String(student.id)
+  //       );
+        
+  //       return {
+  //         ...student,
+  //         isPresent: !!presence, // true ou false
+  //         checkInTime: presence ? presence.time : null
+  //       };
+  //     });
+
+  //     setFullStudentList(combinedList);
+      
+  //     setStats({
+  //       total: studentsData.length,
+  //       present: attendanceData?.length || 0,
+  //       absent: studentsData.length - (attendanceData?.length || 0)
+  //     });
+  //   }
+  // };
+
   const loadData = async () => {
     if (!selectedClass) return;
     
@@ -49,7 +86,6 @@ const TeacherView = ({ onBack }) => {
       const combinedList = studentsData.map(student => {
         // Verifica se o aluno está na lista de presença
         const presence = attendanceData?.find(a => 
-          // Compara ID do aluno (pode vir como students.id ou student_id dependendo do Supabase)
           String(a.students?.id || a.student_id) === String(student.id)
         );
         
@@ -60,7 +96,16 @@ const TeacherView = ({ onBack }) => {
         };
       });
 
+      // --- ALTERAÇÃO AQUI: Ordenação Alfabética ---
+      // Ordena a lista pelo nome do aluno (A -> Z)
+      combinedList.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+      // --------------------------------------------
+
       setFullStudentList(combinedList);
+
+      console.log(combinedList);
       
       setStats({
         total: studentsData.length,
