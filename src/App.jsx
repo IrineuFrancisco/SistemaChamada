@@ -39,16 +39,41 @@ const App = () => {
     console.log('KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);
   };
 
+  // const loadAttendances = async () => {
+  //   if (!selectedClass) return;
+
+  //   const today = new Date().toISOString().split('T')[0];
+  //   const { data, error } = await getAttendances(selectedClass, today);
+
+  //   if (!error && data) {
+  //     setAttendances(data);
+  //   }
+  // };
+
   const loadAttendances = async () => {
     if (!selectedClass) return;
+    
 
     const today = new Date().toISOString().split('T')[0];
     const { data, error } = await getAttendances(selectedClass, today);
+    
 
     if (!error && data) {
-      setAttendances(data);
+      // --- LÓGICA DE ORDENAÇÃO ADICIONADA AQUI ---
+      console.log(data);
+      const sortedData = data.sort((a, b) => {
+        const nameA = a.students?.name || ''; // Pega o nome ou string vazia
+        const nameB = b.students?.name || '';
+        
+        // localeCompare é ideal para ordenar textos com acentos em PT-BR
+        return nameA.localeCompare(nameB, 'pt-BR');
+      });
+
+      setAttendances(sortedData);
     }
   };
+
+  
 
   const handleTeacherAccess = () => {
     setShowPasswordModal(true);
