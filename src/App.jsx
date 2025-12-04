@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Camera, Users, Calendar, CheckCircle, Clock, BarChart3, X, Lock, FormInput, FormIcon, WebhookIcon, 
-  HomeIcon, NotebookIcon, DoorOpenIcon, Menu } from 'lucide-react'; // <--- Adicionei 'Menu' aqui
+  HomeIcon, NotebookIcon, DoorOpenIcon, Menu, 
+  Calendar1Icon} from 'lucide-react'; // <--- Adicionei 'Menu' aqui
 import QRScanner from './components/QRScanner';
 import StudentRegister from './components/StudentRegister';
-import { registerAttendance, getAttendances, getClasses } from './services/supabase';
+// Função importada
+import { registerAttendance, getAttendances, getClasses, getStudentsByClass } from './services/supabase';
 import senaiLogo from './assets/img/senai_logo.png'; 
 import senaiBackground from './assets/img/bk_image_senai.png';
 
@@ -16,6 +18,9 @@ const App = () => {
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // NOVO ESTADO: Lista unificada de todos os alunos com status de presença
+  const [allStudents, setAllStudents] = useState([]);
 
   // Estados para o Modal de Senha
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -39,41 +44,8 @@ const App = () => {
     console.log('KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);
   };
 
-  // const loadAttendances = async () => {
-  //   if (!selectedClass) return;
-
-  //   const today = new Date().toISOString().split('T')[0];
-  //   const { data, error } = await getAttendances(selectedClass, today);
-
-  //   if (!error && data) {
-  //     setAttendances(data);
-  //   }
-  // };
-
-  const loadAttendances = async () => {
-    if (!selectedClass) return;
-    
-
-    const today = new Date().toISOString().split('T')[0];
-    const { data, error } = await getAttendances(selectedClass, today);
-    
-
-    if (!error && data) {
-      // --- LÓGICA DE ORDENAÇÃO ADICIONADA AQUI ---
-      console.log(data);
-      const sortedData = data.sort((a, b) => {
-        const nameA = a.students?.name || ''; // Pega o nome ou string vazia
-        const nameB = b.students?.name || '';
-        
-        // localeCompare é ideal para ordenar textos com acentos em PT-BR
-        return nameA.localeCompare(nameB, 'pt-BR');
-      });
-
-      setAttendances(sortedData);
-    }
-  };
-
-  
+  // --- FUNÇÃO loadAttendances ORIGINAL FOI REMOVIDA/COMENTADA ---
+  // A lógica de carregamento e combinação foi movida para o useEffect
 
   const handleTeacherAccess = () => {
     setShowPasswordModal(true);
@@ -92,11 +64,70 @@ const App = () => {
 
   useEffect(() => {
     if (view === 'teacher') {
-      loadAttendances();
-      const interval = setInterval(loadAttendances, 5000);
+
+      const fetchData = async () => {
+        if (!selectedClass) {
+          setAllStudents([]);
+          setAttendances([]);
+          return;
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+
+        // 1. Carregar TODOS os alunos da turma
+        const { data: studentsData, error: studentsError } = await getStudentsByClass(selectedClass);
+        if (studentsError) {
+          console.error("Erro ao carregar alunos:", studentsError);
+          setAllStudents([]);
+          return;
+        }
+
+        // 2. Carregar Presenças de HOJE
+        const { data: attendanceData, error: attendanceError } = await getAttendances(selectedClass, today);
+        if (attendanceError) {
+          console.error("Erro ao carregar presenças:", attendanceError);
+        }
+        
+        // Mapear presenças por ID do aluno para busca rápida
+        const presentMap = (attendanceData || []).reduce((acc, att) => {
+            // Note: O retorno de getAttendances já tem 'student_id' (o ID do aluno)
+            acc[att.student_id] = att; 
+            return acc;
+        }, {});
+        
+        // 3. Combinar as listas e definir o status
+        const combinedList = (studentsData || []).map(student => {
+            const attendance = presentMap[student.id]; // Verifica se o aluno está no mapa de presentes
+
+            return {
+                id: student.id,
+                student_code: student.student_code,
+                name: student.name,
+                // Define o status e a hora baseados na presença
+                status: attendance ? 'Presente' : 'Faltou',
+                time: attendance ? attendance.time : 'N/A', 
+                // Útil para a contagem
+                isPresent: !!attendance 
+            };
+        });
+        
+        // Ordenar a lista combinada por nome do aluno (Português-Brasil)
+        const sortedCombinedList = combinedList.sort((a, b) => 
+          a.name.localeCompare(b.name, 'pt-BR')
+        );
+
+        setAllStudents(sortedCombinedList);
+        // Atualiza attendances APENAS para a contagem no painel superior
+        setAttendances(attendanceData || []); 
+      };
+
+      fetchData(); // Roda imediatamente
+
+      const interval = setInterval(fetchData, 5000); // Roda a cada 5 segundos
       return () => clearInterval(interval);
     }
   }, [view, selectedClass]);
+
 
   const handleScan = async (qrCode) => {
     console.log("CÓDIGO LIDO:", qrCode);
@@ -261,6 +292,18 @@ const App = () => {
                 </div>
               </div>
             </a>
+            {/* Link 5: Calendário */}
+            <a href="https://calendar.google.com/calendar/u/0/r/month/2026/2/1?pli=1" target='blank' className="group">
+              <div className="bg-white border border-gray-200 hover:border-blue-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
+                <div className="bg-blue-100 p-3 rounded-lg group-hover:bg-blue-600 transition-colors">
+                  <Calendar1Icon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800">Calendário</h3>
+                  <p className="text-xs text-gray-500">Aulas e Feriados</p>
+                </div>
+              </div>
+            </a>
 
           </div>
           
@@ -395,7 +438,7 @@ const App = () => {
     );
   }
 
-  // --- PAINEL DO PROFESSOR (Sem alterações) ---
+  // --- PAINEL DO PROFESSOR (Com alterações) ---
   if (view === 'teacher') {
     const today = new Date().toLocaleDateString('pt-BR');
 
@@ -441,7 +484,8 @@ const App = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-600 text-sm">Presenças Hoje</p>
-                      <p className="text-3xl font-bold text-blue-600">{attendances.length}</p>
+                      {/* Usando attendances, que agora só tem os presentes */}
+                      <p className="text-3xl font-bold text-blue-600">{attendances.length}</p> 
                     </div>
                     <CheckCircle className="w-12 h-12 text-blue-600 opacity-20" />
                   </div>
@@ -460,8 +504,9 @@ const App = () => {
                 <div className="bg-white rounded-xl shadow p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-600 text-sm">Status</p>
-                      <p className="text-xl font-bold text-green-600">Ativo</p>
+                      <p className="text-gray-600 text-sm">Total de Alunos</p>
+                      {/* Usando a lista completa de alunos */}
+                      <p className="text-xl font-bold text-green-600">{allStudents.length}</p>
                     </div>
                     <BarChart3 className="w-12 h-12 text-green-600 opacity-20" />
                   </div>
@@ -474,35 +519,43 @@ const App = () => {
                   Registros de Hoje
                 </h3>
 
-                {attendances.length === 0 ? (
+                {allStudents.length === 0 ? (
                   <div className="text-center py-12 text-gray-500">
                     <Calendar className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                    <p>Nenhuma presença registrada ainda</p>
+                    <p>Nenhum aluno encontrado ou erro de carregamento.</p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Código</th>
+                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Notebook</th>
                           <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Aluno</th>
                           <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Horário</th>
                           <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {attendances.map(attendance => (
-                          <tr key={attendance.id} className="hover:bg-gray-50">
+                        {/* Iterando sobre a lista completa e combinada */}
+                        {allStudents.map(student => ( 
+                          <tr key={student.id} className="hover:bg-gray-50">
                             <td className="px-4 py-3 text-sm text-gray-600">
-                              {attendance.students?.student_code}
+                              {student.student_code}
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-800">
-                              {attendance.students?.name}
+                              {student.name}
                             </td>
-                            <td className="px-4 py-3 text-sm text-gray-600">{attendance.time}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600">{student.time}</td>
                             <td className="px-4 py-3">
-                              <span className="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
-                                Presente
+                              {/* Lógica de cor baseada no status */}
+                              <span 
+                                className={`text-xs px-3 py-1 rounded-full ${
+                                  student.status === 'Presente' 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800' // 'Faltou' agora tem cor vermelha
+                                }`}
+                              >
+                                {student.status}
                               </span>
                             </td>
                           </tr>
