@@ -9,6 +9,129 @@ import { registerAttendance, getAttendances, getClasses, getStudentsByClass } fr
 import senaiLogo from './assets/img/senai_logo.png'; 
 import senaiBackground from './assets/img/bk_image_senai.png';
 
+const CalendarWidget = () => {
+  const [currentDate] = useState(new Date());
+  
+  const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const daysOfWeekLabels = ["D", "S", "T", "Q", "Q", "S", "S"];
+
+  const month = currentDate.getMonth();
+  const year = currentDate.getFullYear();
+  const today = currentDate.getDate();
+  const dayOfWeekIndex = currentDate.getDay(); // 0 = Domingo, 1 = Segunda...
+
+  // Lógica de horários solicitada
+  const getSchedule = (dayIndex) => {
+    switch (dayIndex) {
+      case 2: // Terça-feira
+        return [
+          { name: "PBE2", time: "07:00 - 11:00", color: "bg-blue-500" },
+          { name: "PEND", time: "12:00 - 16:00", color: "bg-purple-500" }
+        ];
+      case 3: // Quarta-feira
+        return [
+          { name: "LOPAL", time: "07:00 - 11:00", color: "bg-green-500" },
+          { name: "ARI", time: "12:00 - 16:00", color: "bg-orange-500" }
+        ];
+      case 4: // Quinta-feira
+        return [
+          { name: "PPDM", time: "07:00 - 10:15", color: "bg-red-500" },
+          { name: "PSOF2", time: "10:16 - 14:15", color: "bg-indigo-500" },
+          { name: "PBE2", time: "14:16 - 16:00", color: "bg-blue-500" }
+        ];
+      case 5: // Sexta-feira
+        return [
+          { name: "LER", time: "07:00 - 10:15", color: "bg-yellow-500" },
+          { name: "SOP", time: "10:16 - 16:00", color: "bg-teal-500" }
+        ];
+      default:
+        return []; // Segunda, Sábado e Domingo (vazio conforme solicitado)
+    }
+  };
+
+  const todaySchedule = getSchedule(dayOfWeekIndex);
+
+  // Gerador de calendário
+  const firstDayOfMonth = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
+
+  return (
+    <div className="bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-2xl border border-white/20 w-80">
+      {/* Cabeçalho */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="font-black text-gray-800 text-lg leading-none">
+            {months[month]}
+          </h3>
+          <span className="text-blue-600 text-sm font-bold">{year}</span>
+        </div>
+        <div className="bg-blue-50 p-2 rounded-lg">
+          <Calendar1Icon className="w-5 h-5 text-blue-600" />
+        </div>
+      </div>
+
+      {/* Grade do Calendário */}
+      <div className="grid grid-cols-7 gap-1 text-center mb-2">
+        {daysOfWeekLabels.map(day => (
+          <div key={day} className="text-[10px] font-bold text-gray-400 uppercase">{day}</div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {blanks.map(b => <div key={`b-${b}`} />)}
+        {daysArray.map(day => {
+          const isToday = day === today;
+          return (
+            <div 
+              key={day} 
+              className={`h-8 flex items-center justify-center text-xs rounded-lg transition-all
+                ${isToday ? 'bg-blue-600 text-white font-bold shadow-lg scale-110 z-10' : 'text-gray-600 hover:bg-gray-100'}
+              `}
+            >
+              {day}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Seção de Aulas - Onde a mágica acontece */}
+      <div className="mt-5 pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-xs font-black text-gray-500 uppercase tracking-wider">Aulas de Hoje</h4>
+          <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">
+            {todaySchedule.length} TOTAL
+          </span>
+        </div>
+        
+        <div className="space-y-3">
+          {todaySchedule.length > 0 ? (
+            todaySchedule.map((item, idx) => (
+              <div key={idx} className="group flex items-start gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                <div className={`w-1 h-10 rounded-full ${item.color}`}></div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                    {item.name}
+                  </span>
+                  <div className="flex items-center gap-1 text-[11px] text-gray-500 font-medium">
+                    <Clock className="w-3 h-3" />
+                    {item.time}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-xs text-gray-400 italic">Nenhuma aula programada para hoje.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   const [view, setView] = useState('home');
   const [scanning, setScanning] = useState(false);
@@ -209,6 +332,11 @@ const App = () => {
             <Menu className="w-8 h-8" />
           </button>
         )}
+
+        {/* CALENDÁRIO COM HORÁRIOS (Direita superior) */}
+        <div className="hidden lg:block absolute top-6 right-6 z-20">
+          <CalendarWidget />
+        </div>
 
         {/* Fundo Escuro (Backdrop) */}
         <div 
