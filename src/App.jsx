@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Camera, Users, Calendar, CheckCircle, Clock, BarChart3, X, Lock, FormInput, FormIcon, WebhookIcon, 
   HomeIcon, NotebookIcon, DoorOpenIcon, Menu, 
-  Calendar1Icon} from 'lucide-react'; // <--- Adicionei 'Menu' aqui
+  Calendar1Icon,
+  DoorClosedLockedIcon,
+  DotIcon,
+  BookDownIcon} from 'lucide-react'; // <--- Adicionei 'Menu' aqui
 import QRScanner from './components/QRScanner';
 import StudentRegister from './components/StudentRegister';
+import Calendario from './components/calendario';
 // Função importada
 import { registerAttendance, getAttendances, getClasses, getStudentsByClass } from './services/supabase';
 import senaiLogo from './assets/img/senai_logo.png'; 
 import senaiBackground from './assets/img/bk_image_senai.png';
+import manualPdf from './assets/img/Manual do aluno atualizado.pdf';
 
 const CalendarWidget = () => {
   const [currentDate] = useState(new Date());
@@ -151,6 +156,12 @@ const App = () => {
 
   // Novo estado para o Menu Hambúrguer
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Novo estado para o Modal do Sistema (Card Principal)
+  const [showSystemModal, setShowSystemModal] = useState(false);
+
+  // Novo estado para o Calendário Acadêmico
+  const [showCalendario, setShowCalendario] = useState(false);
 
   useEffect(() => {
     loadClasses();
@@ -334,9 +345,74 @@ const App = () => {
         )}
 
         {/* CALENDÁRIO COM HORÁRIOS (Direita superior) */}
-        <div className="hidden lg:block absolute top-6 right-6 z-20">
+        <div className="hidden lg:flex lg:flex-col lg:gap-6 absolute top-6 right-6 z-20">
           <CalendarWidget />
         </div>
+
+        {/* BOTÃO FLUTUANTE PARA ABRIR O SISTEMA (Desktop) */}
+        <button
+          onClick={() => setShowSystemModal(true)}
+          className="hidden lg:flex absolute bottom-6 right-6 z-20 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all items-center justify-center group"
+          title="Abrir Sistema de Chamada"
+        >
+          <Camera className="w-7 h-7" />
+          <span className="ml-3 font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity max-w-0 group-hover:max-w-xs overflow-hidden whitespace-nowrap">
+            Sistema de Chamada
+          </span>
+        </button>
+
+        {/* MODAL DO SISTEMA (Card Principal Centralizado) */}
+        {showSystemModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 max-w-md w-full animate-in fade-in zoom-in duration-200">
+              <div className="flex justify-end mb-2">
+                <button 
+                  onClick={() => setShowSystemModal(false)}
+                  className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="text-center mb-8">
+                <div 
+                  onClick={handleTeacherAccess}
+                  className="flex items-center justify-center mx-auto mb-4 cursor-pointer transition-colors"
+                  title="Acesso Administrativo"
+                >
+                  <Camera className="w-10 h-10 text-blue-600" />
+                </div>
+                <h1 
+                  onClick={handleTeacherAccess}
+                  className="text-3xl font-bold text-gray-800 mb-2 cursor-pointer select-none hover:text-blue-600 transition-colors"
+                >
+                  Sistema de Chamada
+                </h1>
+                <p className="text-gray-600">Registro de presença com QR Code</p>
+              </div>
+
+              <div className="space-y-4">
+                <button
+                  onClick={() => { setShowSystemModal(false); setView('student'); }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all transform hover:scale-105"
+                >
+                  <Camera className="w-6 h-6" />
+                  Registrar Presença (Aluno)
+                </button>
+
+                <button
+                  onClick={() => { setShowSystemModal(false); setView('register'); }}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all transform hover:scale-105"
+                >
+                  <div className="bg-white/20 p-2 rounded-full">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  Cadastrar Novo Aluno
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Fundo Escuro (Backdrop) */}
         <div 
@@ -420,18 +496,36 @@ const App = () => {
                 </div>
               </div>
             </a>
-            {/* Link 5: Calendário */}
-            <a href="https://calendar.google.com/calendar/u/0/r/month/2026/2/1?pli=1" target='blank' className="group">
-              <div className="bg-white border border-gray-200 hover:border-blue-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
-                <div className="bg-blue-100 p-3 rounded-lg group-hover:bg-blue-600 transition-colors">
-                  <Calendar1Icon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
+            {/* Link 5: Calendário Acadêmico */}
+            <button onClick={() => { setIsMenuOpen(false); setShowCalendario(true); }} className="group w-full">
+              <div className="bg-white border border-gray-200 hover:border-indigo-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
+                <div className="bg-indigo-100 p-3 rounded-lg group-hover:bg-indigo-600 transition-colors">
+                  <Calendar1Icon className="w-6 h-6 text-indigo-600 group-hover:text-white transition-colors" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-gray-800">Calendário</h3>
-                  <p className="text-xs text-gray-500">Aulas e Feriados</p>
+                <div className="text-left">
+                  <h3 className="font-bold text-gray-800">Calendário Acadêmico</h3>
+                  <p className="text-xs text-gray-500">Aulas, feriados e reposições</p>
                 </div>
               </div>
-            </a>
+            </button>
+             {/* Link 6: Manual do Aluno */}
+            <button
+              onClick={() => {
+                setIsMenuOpen(false);
+                window.open(manualPdf, '_blank'); // Abre o PDF em uma nova aba
+              }}
+              className="group w-full"
+            >
+              <div className="bg-white border border-gray-200 hover:border-indigo-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
+                <div className="bg-indigo-100 p-3 rounded-lg group-hover:bg-indigo-600 transition-colors">
+                  <BookDownIcon className="w-6 h-6 text-indigo-600 group-hover:text-white transition-colors" />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-bold text-gray-800">Manual do Aluno</h3>
+                  <p className="text-xs text-gray-500">Diretrizes e recomendações</p>
+                </div>
+              </div>
+            </button>
 
           </div>
           
@@ -440,8 +534,8 @@ const App = () => {
           </div>
         </div>
 
-        {/* --- CARD PRINCIPAL (SISTEMA) --- */}
-        <div className="bg-white/80 rounded-2xl shadow-2xl p-8 max-w-md w-full">
+        {/* --- CARD PRINCIPAL (SISTEMA) - Versão Mobile --- */}
+        <div className="lg:hidden bg-white/80 rounded-2xl shadow-2xl p-8 max-w-md w-full">
           <div className="text-center mb-8">
             <div 
               onClick={handleTeacherAccess}
@@ -479,6 +573,11 @@ const App = () => {
             </button>
           </div>
         </div>
+
+        {/* CALENDÁRIO ACADÊMICO */}
+        {showCalendario && (
+          <Calendario onClose={() => setShowCalendario(false)} />
+        )}
       </div>
     );
   }
