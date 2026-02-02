@@ -506,7 +506,7 @@ const App = () => {
                   <FormIcon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-800">Atestado</h3>
+                  <h3 className="font-bold text-gray-800">Atestado Novo</h3>
                   <p className="text-xs text-gray-500">Registrar justificativa</p>
                 </div>
               </div>
