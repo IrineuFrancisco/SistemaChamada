@@ -454,7 +454,7 @@ const App = () => {
                   <HomeIcon className="w-6 h-6 text-red-600 group-hover:text-white transition-colors" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-800">Meu Senai Senai</h3>
+                  <h3 className="font-bold text-gray-800">Meu Senai</h3>
                   <p className="text-xs text-gray-500">Acesso ao portal</p>
                 </div>
               </div>
