@@ -12,7 +12,6 @@ const Calendario = ({ onClose }) => {
   const holidays = {
     '2026-02-16': 'Carnaval',
     '2026-02-17': 'Carnaval',
-    '2026-02-18': 'Quarta-feira de Cinzas',
     '2026-03-19': 'Feriado',
     '2026-04-03': 'Sexta-feira Santa',
     '2026-04-21': 'Tiradentes',
