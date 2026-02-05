@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Camera, Users, Calendar, CheckCircle, Clock, BarChart3, X, Lock, FormInput, FormIcon, WebhookIcon, 
-  HomeIcon, NotebookIcon, DoorOpenIcon, Menu, 
+import {
+  Camera, Users, Calendar, CheckCircle, Clock, BarChart3, X, Lock, FormInput, FormIcon, WebhookIcon,
+  HomeIcon, NotebookIcon, DoorOpenIcon, Menu,
   Calendar1Icon,
   DoorClosedLockedIcon,
   DotIcon,
   BookDownIcon,
   BookAIcon,
-  BookIcon} from 'lucide-react'; // <--- Adicionei 'Menu' aqui
+  BookIcon
+} from 'lucide-react'; // <--- Adicionei 'Menu' aqui
 import QRScanner from './components/QRScanner';
 import StudentRegister from './components/StudentRegister';
 import Calendario from './components/calendario';
 // Função importada
 import { registerAttendance, getAttendances, getClasses, getStudentsByClass } from './services/supabase';
-import senaiLogo from './assets/img/senai_logo.png'; 
+import senaiLogo from './assets/img/senai_logo.png';
 import senaiBackground from './assets/img/bk_image_senai.png';
 import manualPdf from './assets/img/Manual do aluno atualizado.pdf';
 
 const CalendarWidget = () => {
   const [currentDate] = useState(new Date());
-  
+
   const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   const daysOfWeekLabels = ["D", "S", "T", "Q", "Q", "S", "S"];
 
@@ -91,8 +93,8 @@ const CalendarWidget = () => {
         {daysArray.map(day => {
           const isToday = day === today;
           return (
-            <div 
-              key={day} 
+            <div
+              key={day}
               className={`h-8 flex items-center justify-center text-xs rounded-lg transition-all
                 ${isToday ? 'bg-blue-600 text-white font-bold shadow-lg scale-110 z-10' : 'text-gray-600 hover:bg-gray-100'}
               `}
@@ -111,7 +113,7 @@ const CalendarWidget = () => {
             {todaySchedule.length} TOTAL
           </span>
         </div>
-        
+
         <div className="space-y-3">
           {todaySchedule.length > 0 ? (
             todaySchedule.map((item, idx) => (
@@ -148,7 +150,7 @@ const App = () => {
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   // NOVO ESTADO: Lista unificada de todos os alunos com status de presença
   const [allStudents, setAllStudents] = useState([]);
 
@@ -223,38 +225,38 @@ const App = () => {
         if (attendanceError) {
           console.error("Erro ao carregar presenças:", attendanceError);
         }
-        
+
         // Mapear presenças por ID do aluno para busca rápida
         const presentMap = (attendanceData || []).reduce((acc, att) => {
-            // Note: O retorno de getAttendances já tem 'student_id' (o ID do aluno)
-            acc[att.student_id] = att; 
-            return acc;
+          // Note: O retorno de getAttendances já tem 'student_id' (o ID do aluno)
+          acc[att.student_id] = att;
+          return acc;
         }, {});
-        
+
         // 3. Combinar as listas e definir o status
         const combinedList = (studentsData || []).map(student => {
-            const attendance = presentMap[student.id]; // Verifica se o aluno está no mapa de presentes
+          const attendance = presentMap[student.id]; // Verifica se o aluno está no mapa de presentes
 
-            return {
-                id: student.id,
-                student_code: student.student_code,
-                name: student.name,
-                // Define o status e a hora baseados na presença
-                status: attendance ? 'Presente' : 'Faltou',
-                time: attendance ? attendance.time : 'N/A', 
-                // Útil para a contagem
-                isPresent: !!attendance 
-            };
+          return {
+            id: student.id,
+            student_code: student.student_code,
+            name: student.name,
+            // Define o status e a hora baseados na presença
+            status: attendance ? 'Presente' : 'Faltou',
+            time: attendance ? attendance.time : 'N/A',
+            // Útil para a contagem
+            isPresent: !!attendance
+          };
         });
-        
+
         // Ordenar a lista combinada por nome do aluno (Português-Brasil)
-        const sortedCombinedList = combinedList.sort((a, b) => 
+        const sortedCombinedList = combinedList.sort((a, b) =>
           a.name.localeCompare(b.name, 'pt-BR')
         );
 
         setAllStudents(sortedCombinedList);
         // Atualiza attendances APENAS para a contagem no painel superior
-        setAttendances(attendanceData || []); 
+        setAttendances(attendanceData || []);
       };
 
       fetchData(); // Roda imediatamente
@@ -299,7 +301,7 @@ const App = () => {
   if (view === 'home') {
     return (
       <div className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4" style={{ backgroundImage: `url(${senaiBackground})` }}>
-        
+
         {/* --- MODAL DE SENHA --- */}
         {showPasswordModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -334,10 +336,10 @@ const App = () => {
         )}
 
         {/* --- MENU HAMBÚRGUER --- */}
-        
+
         {/* Botão de Abrir */}
         {!isMenuOpen && (
-          <button 
+          <button
             onClick={() => setIsMenuOpen(true)}
             className="absolute top-6 left-6 z-20 bg-white/90 p-3 rounded-xl shadow-lg hover:bg-white hover:scale-105 transition-all text-gray-700 border border-white/20 backdrop-blur-sm"
             title="Menu de Utilidades"
@@ -368,23 +370,23 @@ const App = () => {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 max-w-md w-full animate-in fade-in zoom-in duration-200">
               <div className="flex justify-end mb-2">
-                <button 
+                <button
                   onClick={() => setShowSystemModal(false)}
                   className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-colors"
                 >
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              
+
               <div className="text-center mb-8">
-                <div 
+                <div
                   onClick={handleTeacherAccess}
                   className="flex items-center justify-center mx-auto mb-4 cursor-pointer transition-colors"
                   title="Acesso Administrativo"
                 >
                   <Camera className="w-10 h-10 text-blue-600" />
                 </div>
-                <h1 
+                <h1
                   onClick={handleTeacherAccess}
                   className="text-3xl font-bold text-gray-800 mb-2 cursor-pointer select-none hover:text-blue-600 transition-colors"
                 >
@@ -417,18 +419,16 @@ const App = () => {
         )}
 
         {/* Fundo Escuro (Backdrop) */}
-        <div 
-          className={`fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 backdrop-blur-sm ${
-            isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
-          }`}
+        <div
+          className={`fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 backdrop-blur-sm ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+            }`}
           onClick={() => setIsMenuOpen(false)}
         />
 
         {/* Gaveta Lateral (Drawer) */}
-        <div 
-          className={`fixed top-0 left-0 h-full w-[340px] bg-white/95 backdrop-blur-md shadow-2xl z-40 transform transition-transform duration-300 ease-out ${
-            isMenuOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+        <div
+          className={`fixed top-0 left-0 h-full w-[340px] bg-white/95 backdrop-blur-md shadow-2xl z-40 transform transition-transform duration-300 ease-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
         >
           {/* Cabeçalho do Menu */}
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
@@ -436,7 +436,7 @@ const App = () => {
               <h2 className="text-xl font-bold text-gray-800">Utilidades</h2>
               {/* <p className="text-xs text-gray-500">Links rápidos</p> */}
             </div>
-            <button 
+            <button
               onClick={() => setIsMenuOpen(false)}
               className="p-2 hover:bg-red-100 hover:text-red-600 rounded-full transition-colors text-gray-500"
             >
@@ -446,7 +446,7 @@ const App = () => {
 
           {/* Lista de Links */}
           <div className="p-6 flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-100px)]">
-            
+
             {/* Link 1: Meu Senai */}
             <a href="https://identidade.senai.br/authenticationendpoint/login.do?RelayState=https%3A%2F%2Fmeusenai.senai.br%2F&commonAuthCallerPath=%2Fsamlsso&forceAuth=false&passiveAuth=false&tenantDomain=carbon.super&sessionDataKey=7c791ccc-3748-4d46-bc53-2bb71c8144cf&relyingParty=https%3A%2F%2Fmeusenai.senai.br&type=samlsso&sp=meusenai.senai.br&isSaaSApp=false&authenticators=BasicAuthenticator%3ALOCAL" target='blank' className="group">
               <div className="bg-white border border-gray-200 hover:border-red-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
@@ -508,7 +508,9 @@ const App = () => {
                 <div>
                   <h3 className="font-bold text-gray-800">Atestado</h3>
                   <p className="text-xs text-gray-500">Registrar justificativa</p>
+
                 </div>
+
               </div>
             </a>
             {/* Link 6: Calendário Acadêmico */}
@@ -523,7 +525,7 @@ const App = () => {
                 </div>
               </div>
             </button>
-             {/* Link 7: Manual do Aluno */}
+            {/* Link 7: Manual do Aluno */}
             <button
               onClick={() => {
                 setIsMenuOpen(false);
@@ -543,7 +545,7 @@ const App = () => {
             </button>
 
           </div>
-          
+
           <div className="absolute bottom-0 w-full p-6 text-center text-xs text-gray-400 border-t border-gray-100">
             IrineuFrancisco &copy; 2025
           </div>
@@ -552,14 +554,14 @@ const App = () => {
         {/* --- CARD PRINCIPAL (SISTEMA) - Versão Mobile --- */}
         <div className="lg:hidden bg-white/80 rounded-2xl shadow-2xl p-8 max-w-md w-full">
           <div className="text-center mb-8">
-            <div 
+            <div
               onClick={handleTeacherAccess}
               className="flex items-center justify-center mx-auto mb-4 cursor-pointer transition-colors"
               title="Acesso Administrativo"
             >
               <Camera className="w-10 h-10 text-blue-600" />
             </div>
-            <h1 
+            <h1
               onClick={handleTeacherAccess}
               className="text-3xl font-bold text-gray-800 mb-2 cursor-pointer select-none hover:text-blue-600 transition-colors"
             >
@@ -727,7 +729,7 @@ const App = () => {
                     <div>
                       <p className="text-gray-600 text-sm">Presenças Hoje</p>
                       {/* Usando attendances, que agora só tem os presentes */}
-                      <p className="text-3xl font-bold text-blue-600">{attendances.length}</p> 
+                      <p className="text-3xl font-bold text-blue-600">{attendances.length}</p>
                     </div>
                     <CheckCircle className="w-12 h-12 text-blue-600 opacity-20" />
                   </div>
@@ -779,7 +781,7 @@ const App = () => {
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {/* Iterando sobre a lista completa e combinada */}
-                        {allStudents.map(student => ( 
+                        {allStudents.map(student => (
                           <tr key={student.id} className="hover:bg-gray-50">
                             <td className="px-4 py-3 text-sm text-gray-600">
                               {student.student_code}
@@ -790,12 +792,11 @@ const App = () => {
                             <td className="px-4 py-3 text-sm text-gray-600">{student.time}</td>
                             <td className="px-4 py-3">
                               {/* Lógica de cor baseada no status */}
-                              <span 
-                                className={`text-xs px-3 py-1 rounded-full ${
-                                  student.status === 'Presente' 
-                                    ? 'bg-green-100 text-green-800' 
+                              <span
+                                className={`text-xs px-3 py-1 rounded-full ${student.status === 'Presente'
+                                    ? 'bg-green-100 text-green-800'
                                     : 'bg-red-100 text-red-800' // 'Faltou' agora tem cor vermelha
-                                }`}
+                                  }`}
                               >
                                 {student.status}
                               </span>
