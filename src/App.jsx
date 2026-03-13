@@ -7,7 +7,9 @@ import {
   DotIcon,
   BookDownIcon,
   BookAIcon,
-  BookIcon
+  BookIcon,
+  TestTubeIcon,
+  CheckIcon
 } from 'lucide-react'; // <--- Adicionei 'Menu' aqui
 import QRScanner from './components/QRScanner';
 import StudentRegister from './components/StudentRegister';
@@ -473,7 +475,20 @@ const App = () => {
               </div>
             </a>
 
-            {/* Link 3: Conecta Senai */}
+            {/* Link 3: Simulado */}
+            <a href="http://10.137.146.102:3000/" target='blank' className="group">
+              <div className="bg-white border border-gray-200 hover:border-green-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
+                <div className="bg-blue-100 p-3 rounded-lg group-hover:bg-blue-600 transition-colors">
+                  <CheckIcon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800">Simulados</h3>
+                  <p className="text-xs text-gray-500">Sistema de simulados</p>
+                </div>
+              </div>
+            </a>
+
+            {/* Link 4: Conecta Senai */}
             <a href="https://www.conectasenai.com.br/login/" target='blank' className="group">
               <div className="bg-white border border-gray-200 hover:border-green-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
                 <div className="bg-green-100 p-3 rounded-lg group-hover:bg-green-600 transition-colors">
@@ -486,7 +501,7 @@ const App = () => {
               </div>
             </a>
 
-            {/* Link 4: TransitRoom */}
+            {/* Link 5: TransitRoom */}
             <a href="https://niloweb.com.br/transit-room/" target='blank' className="group">
               <div className="bg-white border border-gray-200 hover:border-purple-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
                 <div className="bg-purple-100 p-3 rounded-lg group-hover:bg-purple-600 transition-colors">
@@ -499,7 +514,7 @@ const App = () => {
               </div>
             </a>
 
-            {/* Link 5: Registrar Atestado */}
+            {/* Link 6: Registrar Atestado */}
             <a href="https://forms.gle/GKWVwv8z7qHhBNqd8" target='blank' className="group">
               <div className="bg-white border border-gray-200 hover:border-blue-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
                 <div className="bg-blue-100 p-3 rounded-lg group-hover:bg-blue-600 transition-colors">
@@ -513,7 +528,7 @@ const App = () => {
 
               </div>
             </a>
-            {/* Link 6: Calendário Acadêmico */}
+            {/* Link 7: Calendário Acadêmico */}
             <button onClick={() => { setIsMenuOpen(false); setShowCalendario(true); }} className="group w-full">
               <div className="bg-white border border-gray-200 hover:border-indigo-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
                 <div className="bg-indigo-100 p-3 rounded-lg group-hover:bg-indigo-600 transition-colors">
@@ -525,7 +540,7 @@ const App = () => {
                 </div>
               </div>
             </button>
-            {/* Link 7: Manual do Aluno */}
+            {/* Link 8: Manual do Aluno */}
             <button
               onClick={() => {
                 setIsMenuOpen(false);
