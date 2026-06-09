@@ -515,7 +515,7 @@ const App = () => {
             </a>
 
             {/* Link 6: Registrar Atestado */}
-            <a href="https://forms.gle/GKWVwv8z7qHhBNqd8" target='blank' className="group">
+            <a href="https://forms.gle/1Uys3EZ2hQMdwehh7" target='blank' className="group">
               <div className="bg-white border border-gray-200 hover:border-blue-500 hover:shadow-md p-4 rounded-xl flex items-center gap-4 transition-all">
                 <div className="bg-blue-100 p-3 rounded-lg group-hover:bg-blue-600 transition-colors">
                   <FormIcon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
