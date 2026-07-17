@@ -29,7 +29,7 @@ const HomeView = ({ onNavigate }) => {
   };
 
   const quickLinks = [
-    { title: "Meu Senai", desc: "Acesso ao portal acadêmico", icon: BookOpen, color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-900/30", href: "https://identidade.senai.br/..." },
+    { title: "Meu Senai", desc: "Acesso ao portal acadêmico", icon: BookOpen, color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-900/30", href: "https://meusenai.senai.br" },
     { title: "Classroom", desc: "Google Classroom", icon: Users, color: "text-green-600 dark:text-green-400", bg: "bg-green-50 dark:bg-green-900/30", href: "https://classroom.google.com/" },
     { title: "Simulados", desc: "Plataforma de testes", icon: CheckCircle, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/30", href: "http://10.137.146.102:3000/" },
     { title: "TransitRoom", desc: "Gestão de saídas da sala", icon: Settings, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-900/30", href: "https://niloweb.com.br/transit-room/" },
