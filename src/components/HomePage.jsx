@@ -33,7 +33,7 @@ const HomePage = ({ onNavigate }) => {
             onClick={handleTeacherAccess}
             className="text-3xl font-bold text-gray-800 mb-2 cursor-pointer select-none"
           >
-            Sistema de Chamada
+            Portal Senai Dev-OCZ
           </h1>
           <p className="text-gray-600">Registro de presença com QR Code</p>
         </div>

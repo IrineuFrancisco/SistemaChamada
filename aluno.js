@@ -114,7 +114,7 @@ const AttendanceSystem = () => {
             <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Camera className="w-10 h-10 text-blue-600" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Sistema de Chamada</h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Portal Senai Dev-OCZ</h1>
             <p className="text-gray-600">Registro de presença com QR Code</p>
           </div>
 
