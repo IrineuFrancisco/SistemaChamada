@@ -72,8 +72,8 @@ const HomeView = ({ onNavigate }) => {
           {/* Welcome Banner */}
           <div className="bg-gradient-to-r from-blue-700 to-indigo-800 dark:from-blue-900 dark:to-indigo-950 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden transition-colors duration-300">
             <div className="relative z-10">
-              <h2 className="text-3xl font-bold mb-2">Bem-vindo ao Sistema de Chamada</h2>
-              <p className="text-blue-100 dark:text-blue-200 max-w-lg mb-8 text-lg">Registre sua presença de forma rápida e segura utilizando seu QR Code estudantil.</p>
+              <h2 className="text-3xl font-bold mb-2">Bem-vindo ao Portal Senai Dev-OCZ</h2>
+              <p className="text-blue-100 dark:text-blue-200 max-w-lg mb-8 text-lg">Acesse os principais serviços e aplicativos para facilitar sua jornada acadêmica.</p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
