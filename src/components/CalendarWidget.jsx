@@ -33,7 +33,7 @@ const CalendarWidget = () => {
         ];
       case 5: // Sexta-feira
         return [
-          { name: "BCD", time: "07:00 - 10:15", color: "bg-yellow-500" },
+          { name: "BCD", time: "07:00 - 11:00", color: "bg-yellow-500" },
           { name: "PSOF1", time: "12:00 - 12:50", color: "bg-indigo-500" },
           { name: "TSOF2", time: "12:51 - 16:00", color: "bg-blue-500" }
         ];
