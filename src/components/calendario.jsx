@@ -32,9 +32,12 @@ const Calendario = ({ onClose }) => {
 
     // --- ESTADUAIS (São Paulo) ---
     '2026-07-09': '⚔️ Revolução Constitucionalista de 1932',
+    '2026-10-13': '👨🏻‍🏫 Dia do Professor',
 
     // --- MUNICIPAIS (Osvaldo Cruz - SP) ---
-    '2026-10-14': '🏙️ Aniversário de Osvaldo Cruz',
+    '2026-03-19': '🙏 São José',
+    '2026-06-06': '🏙️ Aniversário de Osvaldo Cruz',
+
 
     // --- RECESSO ESCOLAR (24/Jun a 21/Jul) ---
     '2026-06-24': '📚 Recesso Escolar',
