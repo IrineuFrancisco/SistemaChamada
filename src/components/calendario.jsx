@@ -31,7 +31,6 @@ const Calendario = ({ onClose }) => {
     '2026-12-25': '🎄 Natal',
 
     // --- ESTADUAIS (São Paulo) ---
-    '2026-07-09': '⚔️ Revolução Constitucionalista de 1932',
     '2026-10-13': '👨🏻‍🏫 Dia do Professor',
 
     // --- MUNICIPAIS (Osvaldo Cruz - SP) ---
