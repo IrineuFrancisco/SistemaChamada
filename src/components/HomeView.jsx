@@ -286,7 +286,6 @@ const HomeView = ({ onNavigate }) => {
                   }}
                   onCopy={(e) => e.preventDefault()}
                   onCut={(e) => e.preventDefault()}
-                  onPaste={(e) => e.preventDefault()}
                   autoComplete="new-password"
                   spellCheck={false}
                   autoCorrect="off"
